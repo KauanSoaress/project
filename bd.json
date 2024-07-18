@@ -1,37 +1,42 @@
-[
-    {
-        "id": 1,
-        "name": "Persona 5",
-        "year": "2019"
+{
+    "1": {
+        "name": "Valorant",
+        "year": 2020
     },
-    {
-        "id": 2,
-        "name": "Dragon City",
-        "year": "2010"
+    "2": {
+        "name": "Cyberpunk 2077",
+        "year": 2019
     },
-    {
-        "id": 8,
-        "name": "Uncharted 2",
-        "year": "2015"
+    "3": {
+        "name": "The Last of Us Part II",
+        "year": 2021
     },
-    {
-        "id": 5,
-        "name": "League of Legends",
-        "year": "2015"
+    "4": {
+        "name": "Ghost of Tsushima",
+        "year": 2019
     },
-    {
-        "id": 6,
+    "5": {
+        "name": "Assassin's Creed Valhalla",
+        "year": 2022
+    },
+    "6": {
+        "name": "Call of Duty: Warzone",
+        "year": 2020
+    },
+    "7": {
+        "name": "FIFA 21",
+        "year": 2021
+    },
+    "8": {
+        "name": "Among Us",
+        "year": 2019
+    },
+    "9": {
+        "name": "Genshin Impact",
+        "year": 2021
+    },
+    "10": {
         "name": "Minecraft",
-        "year": "2009"
-    },
-    {
-        "id": 8,
-        "name": "Minecraft",
-        "year": "2009"
-    },
-    {
-        "id": 12,
-        "name": "Elden Ring",
-        "year": "2021"
+        "year": 2013
     }
-]
+}
