@@ -1,9 +1,9 @@
-### DONE
+## DONE
 
 - Agrupar funções
 - Separar a chamada das rotas e definição das funções para outra função
 
-### TO-DO
+## TO-DO
 
 - Consertar JSON
 - Diminuir a quantidade de vezes que o JSON é aberto
