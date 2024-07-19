@@ -14,18 +14,20 @@ def get_or_post_games():
             )
         )
     elif request.method == 'POST':
-        data = open('bd.json')
-        games = json.load(data)
+        with open('bd.json', 'r+') as data:
+            games = json.load(data)
 
-        new_game = request.get_json()
-    
-        position_to_insert = str(len(games) + 1)
+            new_game = request.get_json()
+        
+            position_to_insert = str(len(games) + 1)
 
-        games[position_to_insert] = new_game
+            games[position_to_insert] = new_game
 
-        data = open('bd.json', 'w')
-        json.dump(games, data, indent=4)
-        data.close()
+            data.seek(0)
+
+            json.dump(games, data, indent=4)
+
+            data.truncate()
 
         return make_response(
             jsonify(
@@ -34,18 +36,35 @@ def get_or_post_games():
             )
         )
 
+def get_game_by_name(name): 
+    data = open('bd.json')
+    games = json.load(data)
+    data.close()
+
+    for index in games:
+        if games[index]['name'] == name:
+            return make_response (
+                jsonify (
+                    message= "Game found",
+                    game= {
+                        "name": games[index]['name'],
+                        "year": games[index]['year']
+                    }
+                )
+            )
 
 def delete_or_edit_game(id):
     if request.method == 'DELETE':
-        data = open('bd.json')
-        games = json.load(data)
-        data.close()
+        with open('bd.json', 'r+') as data:
+            games = json.load(data)
 
-        games.pop(id)
+            games.pop(id)
 
-        data = open('bd.json', 'w')
-        json.dump(games, data, indent=4)
-        data.close()
+            data.seek(0)
+
+            json.dump(games, data, indent=4)
+
+            data.truncate()
 
         return make_response(
             jsonify(
@@ -54,18 +73,19 @@ def delete_or_edit_game(id):
             )
         )
     elif request.method == 'PUT':
-        data = open('bd.json')
-        games = json.load(data)
-        data.close()
+        with open('bd.json', 'r+') as data:
+            games = json.load(data)
 
-        new_game_data = request.get_json()
+            new_game_data = request.get_json()
 
-        games[id]["name"] = new_game_data["name"]
-        games[id]["year"] = new_game_data["year"]
-        
-        data = open('bd.json', 'w')
-        json.dump(games, data, indent=4)
-        data.close()
+            games[id]["name"] = new_game_data["name"]
+            games[id]["year"] = new_game_data["year"]
+            
+            data.seek(0)
+
+            json.dump(games, data, indent=4)
+
+            data.truncate()
 
         return make_response(
             jsonify(
