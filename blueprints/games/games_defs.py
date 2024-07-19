@@ -16,10 +16,12 @@ def get_or_post_games():
     elif request.method == 'POST':
         data = open('bd.json')
         games = json.load(data)
-        data.close()
 
         new_game = request.get_json()
-        games.append(new_game)
+    
+        position_to_insert = str(len(games) + 1)
+
+        games[position_to_insert] = new_game
 
         data = open('bd.json', 'w')
         json.dump(games, data, indent=4)
@@ -32,19 +34,6 @@ def get_or_post_games():
             )
         )
 
-def get_game(name):
-    data = open('bd.json')
-    games = json.load(data)
-
-    for game in games:
-        if game['name'] == name:
-            return make_response (
-                jsonify(
-                    message= 'Game found', 
-                    game= game
-                )
-            )
-
 
 def delete_or_edit_game(id):
     if request.method == 'DELETE':
@@ -52,10 +41,7 @@ def delete_or_edit_game(id):
         games = json.load(data)
         data.close()
 
-        for i in range(len(games)):
-            if games[i]["id"] == id:
-                games.pop(i)
-                break
+        games.pop(id)
 
         data = open('bd.json', 'w')
         json.dump(games, data, indent=4)
@@ -74,11 +60,8 @@ def delete_or_edit_game(id):
 
         new_game_data = request.get_json()
 
-        for i in range(len(games)):
-            if games[i]["id"] == id:
-                games[i]["name"] = new_game_data["name"]
-                games[i]["year"] = new_game_data["year"]
-                break
+        games[id]["name"] = new_game_data["name"]
+        games[id]["year"] = new_game_data["year"]
         
         data = open('bd.json', 'w')
         json.dump(games, data, indent=4)
