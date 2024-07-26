@@ -1,42 +1,45 @@
-from flask import jsonify, request, make_response
+from flask import jsonify, request, make_response, current_app
 from utils.VerifyParameters import verify_name, verify_year, exists_id
 import json
 
 def get_games():
-    data = open('bd.json')
-    games = json.load(data)
-    data.close()
+    db = current_app.config['MONGO_DB']
+    games_collection = db['games']
+    games = list(games_collection.find({}, {"_id": 0, "name": 1, "year": 1}))
+
+    # Convertendo i _id para string no caso de precisar mostrá-lo
+    # for game in games:
+    #     game['_id'] = str(game['_id'])
 
     return make_response(
         jsonify(
             message= 'Games list', 
-            game= games
+            games= games
         )
     )
 
 def post_games():
-    with open('bd.json', 'r+') as data:
-        games = json.load(data)
+    new_game = request.get_json()
 
-        new_game = request.get_json()
+    if not verify_name(new_game) or not verify_year(new_game):
+        return make_response(
+            jsonify(
+                message= 'Register Error: Invalid name or year',
+            ),
+            400
+        )
 
-        if not verify_name(new_game) or not verify_year(new_game):
-            return make_response(
-                jsonify(
-                    message= 'Register Error: Invalid name or year',
-                ),
-                400
-            )
-    
-        position_to_insert = str(len(games) + 1)
+    db = current_app.config['MONGO_DB']
+    games_collection = db['games']
 
-        games[position_to_insert] = new_game
+    print(new_game)
 
-        data.seek(0)
+    result = games_collection.insert_one(new_game)
 
-        json.dump(games, data, indent=4)
+    print(new_game)
+    new_game_id = result.inserted_id
 
-        data.truncate()
+    new_game['_id'] = str(new_game_id)
 
     return make_response(
         jsonify(
