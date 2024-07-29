@@ -8,7 +8,7 @@ def get_games():
 
     games = list(games_collection.find({}, {"_id": 0, "name": 1, "year": 1}))
 
-    # Convertendo i _id para string no caso de precisar mostrá-lo
+    # Convertendo o _id para string no caso de precisar mostrá-lo
     # for game in games:
     #     game['_id'] = str(game['_id'])
 
