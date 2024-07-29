@@ -1,10 +1,11 @@
 from flask import jsonify, request, make_response, current_app
-from utils.VerifyParameters import verify_name, verify_year, exists_id
-import json
+from utils.VerifyParameters import verify_name, verify_year, verify_id
+from bson import ObjectId
 
 def get_games():
     db = current_app.config['MONGO_DB']
     games_collection = db['games']
+
     games = list(games_collection.find({}, {"_id": 0, "name": 1, "year": 1}))
 
     # Convertendo i _id para string no caso de precisar mostrá-lo
@@ -23,22 +24,19 @@ def post_games():
 
     if not verify_name(new_game) or not verify_year(new_game):
         return make_response(
-            jsonify(
-                message= 'Register Error: Invalid name or year',
-            ),
-            400
-        )
+                jsonify(
+                    message= 'Error: Invalid name or year',
+                ),
+                400
+            )
 
     db = current_app.config['MONGO_DB']
     games_collection = db['games']
 
-    print(new_game)
-
     result = games_collection.insert_one(new_game)
 
-    print(new_game)
+    # Convertendo o id para string para mostrá-lo
     new_game_id = result.inserted_id
-
     new_game['_id'] = str(new_game_id)
 
     return make_response(
@@ -49,21 +47,23 @@ def post_games():
     )
 
 def get_game_by_name(name): 
-    data = open('bd.json')
-    games = json.load(data)
-    data.close()
+    db = current_app.config['MONGO_DB']
+    games_collection = db['games']
 
-    for index in games:
-        if games[index]['name'] == name:
-            return make_response (
+    game = games_collection.find_one({"name": name}, {"_id": 0, "name": 1, "year": 1})
+
+    # Convertendo i _id para string no caso de precisar mostrá-lo
+    # game['_id'] = str(game['_id'])
+
+    if game: 
+        return (
+            make_response (
                 jsonify (
-                    message= "Game found",
-                    game= {
-                        "name": games[index]['name'],
-                        "year": games[index]['year']
-                    }
+                    message= "Game found", 
+                    game= game
                 )
             )
+        )
         
     return make_response (
         jsonify (
@@ -72,66 +72,65 @@ def get_game_by_name(name):
     )
 
 def delete_game(id):
-    with open('bd.json', 'r+') as data:
-        games = json.load(data)
+    if not verify_id(id): 
+        return make_response(
+            jsonify(
+                message= 'Error: Invalid id',
+            ),
+            400
+        )
+    
+    db = current_app.config['MONGO_DB']
+    games_collection = db['games']
 
-        if not exists_id(id, games):
-            return make_response(
-                jsonify(
-                    message= 'Delete Error: Invalid id',
-                ),
-                400
+    delete_status = games_collection.delete_one({"_id": ObjectId(id)})    
+    
+    if delete_status.deleted_count == 0:
+        return make_response(
+            jsonify(
+                message= 'Edit Error: Game not found',
             )
-
-        games.pop(id)
-
-        data.seek(0)
-
-        json.dump(games, data, indent=4)
-
-        data.truncate()
+        )
 
     return make_response(
         jsonify(
             message= "Game deleted",
-            game= games
         )
     )
 
 def edit_game(id):
-    with open('bd.json', 'r+') as data:
-        games = json.load(data)
+    data = request.get_json()
 
-        new_game_data = request.get_json()
+    if not verify_id(id): 
+        return make_response(
+            jsonify(
+                message= 'Error: Invalid id',
+            ),
+            400
+        )
+    
+    if not verify_name(data) or not verify_year(data):
+        return make_response(
+            jsonify(
+                message= 'Error: Invalid name or year',
+            ),
+            400
+        )
+    
+    db = current_app.config['MONGO_DB']
+    games_collection = db['games']
 
-        if not exists_id(id, games):
-            return make_response(
-                jsonify(
-                    message= 'Edit Error: Invalid id',
-                ),
-                400
+    edit_status = games_collection.update_one({"_id": ObjectId(id)}, {"$set": data})
+
+    if edit_status.modified_count == 0:
+        return make_response(
+            jsonify(
+                message= 'Edit Error: Game not found',
             )
-
-        if not verify_name(new_game_data) or not verify_year(new_game_data):
-            return make_response(
-                jsonify(
-                    message= 'Register Error: Invalid name or year',
-                ),
-                400
-            )
-
-        games[id]["name"] = new_game_data["name"]
-        games[id]["year"] = new_game_data["year"]
-        
-        data.seek(0)
-
-        json.dump(games, data, indent=4)
-
-        data.truncate()
+        )
 
     return make_response(
         jsonify(
-            message= "Game edited",
-            game= new_game_data
+            message= "Game edited"
         )
     )
