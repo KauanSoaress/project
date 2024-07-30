@@ -6,7 +6,7 @@ def verify_name(new_game):
     return True
 
 def verify_year(new_game):
-    if 'year' not in new_game or type(new_game['year']) != int:
+    if 'year' not in new_game or type(new_game['year']) != int or len(str(new_game['year'])) != 4:
         return False
     return True
 
