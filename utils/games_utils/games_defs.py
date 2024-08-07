@@ -1,5 +1,5 @@
 from flask import jsonify, request, make_response, current_app
-from utils.VerifyParameters import verify_name, verify_year, verify_id
+from utils.games_utils.VerifyParameters import verify_name, verify_year, verify_id
 from bson import ObjectId
 
 def get_games():
@@ -7,10 +7,6 @@ def get_games():
     games_collection = db['games']
 
     games = list(games_collection.find({}, {"_id": 0, "name": 1, "year": 1}))
-
-    # Convertendo o _id para string no caso de precisar mostrá-lo
-    # for game in games:
-    #     game['_id'] = str(game['_id'])
 
     return make_response(
         jsonify(

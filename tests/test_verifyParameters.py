@@ -1,4 +1,4 @@
-from utils.VerifyParameters import verify_name, verify_year, verify_id
+from utils.games_utils.VerifyParameters import verify_name, verify_year, verify_id
 import unittest
 
 class TestsVerifyName(unittest.TestCase):

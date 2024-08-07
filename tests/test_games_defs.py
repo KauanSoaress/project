@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch, Mock, MagicMock
 from bson import ObjectId
 from flask import Flask
-from utils.games_defs import get_games, post_games, get_game_by_name, delete_game, edit_game
+from utils.games_utils.games_defs import get_games, post_games, get_game_by_name, delete_game, edit_game
 
 class TestGamesDefs(unittest.TestCase):
 
