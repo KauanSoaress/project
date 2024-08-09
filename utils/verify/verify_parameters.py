@@ -16,3 +16,8 @@ def verify_id(id):
     except:
         return False
     return True
+
+def verify_age(new_user):
+    if 'age' not in new_user or type(new_user['age']) != int or new_user['age'] < 0:
+        return False
+    return True 
