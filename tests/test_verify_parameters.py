@@ -1,4 +1,4 @@
-from utils.Verify.VerifyParameters import verify_name, verify_year, verify_id
+from utils.verify.verify_parameters import verify_name, verify_year, verify_id, verify_age
 import unittest
 
 class TestsVerifyName(unittest.TestCase):
@@ -122,6 +122,52 @@ class TestsVerifyId(unittest.TestCase):
         wrong_id_type_boolean = verify_id(id)
 
         self.assertFalse(wrong_id_type_boolean, "Falha com tipo errado (boolean)")
+
+class TestsVerifyAge(unittest.TestCase):
+    def test_verify_age(self):
+        data = {
+            "age": 20,
+        }
+
+        correct_data = verify_age(data)    
+
+        self.assertTrue(correct_data, "Falha com dados corretos")
+        
+    def test_verify_age_field_missing(self):
+        data = {
+            "name": "Kauan",
+        }
+
+        without_age = verify_age(data)
+
+        self.assertFalse(without_age, "Falha com campo faltando")
+
+    def test_verify_age_type_string(self):
+        data = {
+            "age": "hoje",
+        }
+
+        age_type_string = verify_age(data)
+
+        self.assertFalse(age_type_string, "Falha com tipo trocado (string)")
+
+    def test_verify_age_type_boolean(self):
+        data = {
+            "age": True,
+        }
+
+        age_type_boolean = verify_age(data)
+
+        self.assertFalse(age_type_boolean, "Falha com tipo trocado (boolean)")
+
+    def test_verify_age_negative_value(self):
+        data = {
+            "age": -1,
+        }
+
+        age_negative_value = verify_age(data)
+
+        self.assertFalse(age_negative_value, "Erro de sinal do da idade (negative)")
 
 if __name__ == '__main__':
     unittest.main()

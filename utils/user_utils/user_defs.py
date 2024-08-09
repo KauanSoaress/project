@@ -44,26 +44,6 @@ def get_user_by_id(id):
         )
     )
 
-def get_user_by_name(name):
-    db = current_app.config['MONGO_DB']
-    users_collection = db['users']
-
-    user = users_collection.find_one({"name": name}, {"_id": 0})
-
-    if user:
-        return make_response(
-            jsonify(
-                message= 'User found', 
-                user= user
-            )
-        )
-
-    return make_response(
-        jsonify (
-            message= 'User not found'
-        )
-    )
-
 def post_user():
     new_user = request.get_json()
 
