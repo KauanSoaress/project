@@ -3,6 +3,7 @@ from bson import ObjectId
 from utils.verify.verify_parameters import verify_name, verify_age, verify_id
 from utils.games_utils.games_defs import delete_games_by_user_id
 
+
 def get_user():
     db = current_app.config['MONGO_DB']
     users_collection = db['users']
@@ -11,16 +12,17 @@ def get_user():
 
     return make_response(
         jsonify(
-            message= 'User list', 
-            user= user
+            message='User list',
+            user=user
         )
     )
+
 
 def get_user_by_id(id):
     if not verify_id(id):
         return make_response(
             jsonify(
-                message= 'Error: Invalid id',
+                message='Error: Invalid id',
             ),
             400
         )
@@ -33,16 +35,17 @@ def get_user_by_id(id):
     if user:
         return make_response(
             jsonify(
-                message= 'User found', 
-                user= user
+                message='User found',
+                user=user
             )
         )
 
     return make_response(
-        jsonify (
-            message= 'User not found'
+        jsonify(
+            message='User not found'
         )
     )
+
 
 def post_user():
     new_user = request.get_json()
@@ -50,7 +53,7 @@ def post_user():
     if not verify_name(new_user) or not verify_age(new_user):
         return make_response(
                 jsonify(
-                    message= 'Error: Invalid name or age',
+                    message='Error: Invalid name or age',
                 ),
                 400
             )
@@ -66,16 +69,17 @@ def post_user():
 
     return make_response(
         jsonify(
-            message= 'User created', 
-            game= new_user
+            message='User created',
+            game=new_user
         )
     )
+
 
 def delete_user(id):
     if not verify_id(id):
         return make_response(
             jsonify(
-                message= 'Error: Invalid id',
+                message='Error: Invalid id',
             ),
             400
         )
@@ -89,22 +93,23 @@ def delete_user(id):
     if result.deleted_count == 0:
         return make_response(
             jsonify(
-                message= 'Error: User not found',
+                message='Error: User not found',
             ),
             404
         )
 
     return make_response(
         jsonify(
-            message= 'User deleted',
+            message='User deleted',
         )
     )
+
 
 def edit_user(id):
     if not verify_id(id):
         return make_response(
             jsonify(
-                message= 'Error: Invalid id',
+                message='Error: Invalid id',
             ),
             400
         )
@@ -114,7 +119,7 @@ def edit_user(id):
     if not verify_name(updated_user) or not verify_age(updated_user):
         return make_response(
                 jsonify(
-                    message= 'Error: Invalid name or age',
+                    message='Error: Invalid name or age',
                 ),
                 400
             )
@@ -123,20 +128,20 @@ def edit_user(id):
     users_collection = db['users']
 
     result = users_collection.update_one(
-        ({ "_id": ObjectId(id) }),
+        ({"_id": ObjectId(id)}),
         {"$set": updated_user}
     )
 
     if result.matched_count == 0:
         return make_response(
             jsonify(
-                message= 'Error: User not found',
+                message='Error: User not found',
             ),
             404
         )
 
     return make_response(
         jsonify(
-            message= 'User updated'
+            message='User updated'
         )
     )

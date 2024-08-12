@@ -3,6 +3,7 @@ from flask_security import UserMixin
 from models.role_model import Role
 import uuid
 
+
 class User(Document, UserMixin):
     email = StringField(max_length=255, unique=True)
     password = StringField(max_length=255)

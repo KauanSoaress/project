@@ -1,4 +1,3 @@
-import os
 from flask import Flask
 from blueprints.user.user import user_bp
 from blueprints.games.games import games_bp
