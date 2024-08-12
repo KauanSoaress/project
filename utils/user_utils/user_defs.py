@@ -28,7 +28,7 @@ def get_user_by_id(id):
     db = current_app.config['MONGO_DB']
     users_collection = db['users']
 
-    user = users_collection.find_one({"_id": ObjectId(id)}, {"_id": 0})
+    user = users_collection.find_one({"_id": ObjectId(id)}, {"_id": 0, "name": 1, "age": 1})
 
     if user:
         return make_response(

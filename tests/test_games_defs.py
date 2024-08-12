@@ -40,7 +40,7 @@ class TestGamesDefs(unittest.TestCase):
 
         response = get_game_by_name('Game')
 
-        mock_find_one.assert_called_once_with({'name': 'Game'}, {"_id": 0, "name": 1, "year": 1, "user_id": "66a3d3e92646ece2a8c4e49c"})
+        mock_find_one.assert_called_once_with({'name': 'Game'}, {"_id": 0, "name": 1, "year": 1, "user_id": 1})
 
         self.assertEqual(response.status_code, 200)
         self.assertIn('Game found', response.get_json()['message'])
@@ -56,10 +56,10 @@ class TestGamesDefs(unittest.TestCase):
         mock_verify_name.return_value = True
         mock_verify_id.return_value = True
     
-        with self.app.test_request_context(json={"name": "Game 1", "year": 2021}):
+        with self.app.test_request_context(json={"name": "Game 1", "year": 2021, "user_id": '66a3d3e92646ece2a8c4e49c'}):
             response = post_games()
 
-            mock_insert.assert_called_once_with({"name": "Game 1", "year": 2021, '_id': '66a3d3e92646ece2a8c4e49c'})
+            mock_insert.assert_called_once_with({"name": "Game 1", "user_id": '66a3d3e92646ece2a8c4e49c', "year": 2021, '_id': '66a3d3e92646ece2a8c4e49c'})
 
             self.assertEqual(response.status_code, 200)
             self.assertIn('Game created', response.get_json()['message'])
